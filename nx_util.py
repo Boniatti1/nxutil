@@ -115,7 +115,7 @@ if __name__ == "__main__":
 		wl = NxWhitelistExtractor(sql, config.core_rules, pages_hit=options.wl_plimit, rules_hit=options.wl_rlimit)
 		wl.gen_basic_rules()
 		base_rules, opti_rules = wl.opti_rules_back()
-		opti_rules.sort(lambda a,b: (b['hratio']+(b['pratio']*3)) < (a['hratio']+(a['pratio']*3)))
+		opti_rules.sort(key=lambda r: r['hratio'] + (r['pratio'] * 3), reverse=True)
 		r = wl.format_rules_output(wl.final_rules)
 		print(r)
 	if options.dst_file is not None:
