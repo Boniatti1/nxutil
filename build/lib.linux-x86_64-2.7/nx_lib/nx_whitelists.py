@@ -36,7 +36,7 @@ class NxWhitelistExtractor:
     def transform_to_dict(self, l):
         d = {}
         for i in l:
-            if not d.has_key(i[0]):
+            if i[0] not in d:
                 d[i[0]] = []
             d[i[0]].append(i[1])
       #elimininate duplicate ids in each value

@@ -3,8 +3,9 @@ import pprint
 import os
 import cgi
 import sys
-from ordereddict import OrderedDict
+from .ordereddict import OrderedDict
 import logging
+from functools import reduce
 # This code is dirty :)
 # This code needs to be replaced, but so far is doing its job,
 # it will be discarded when we add filters.
@@ -103,11 +104,11 @@ class NxReport(object):
                         '__UPLOADEXCEP__': upload_array, 
                         '__EVADEEXCEP__': evade_array, 
                         '__INTERNEXCEP__': intern_array}
-        for x in dict_replace.keys():
+        for x in list(dict_replace.keys()):
             if dict_replace[x] is None:
                 dict_replace[x] = str(0)
         html = reduce(lambda html,(b, c): html.replace(b, c), 
-                      dict_replace.items(), html)
+                      list(dict_replace.items()), html)
         required_files = [(self.data_dir+"/bootstrap.min.css", "__CSS_BOOTSTRAP__"),
                           (self.data_dir+"/bootstrap-responsive.min.css", "__CSS_BOOTSTRAP_RESPONSIVE_"),
                           (self.data_dir+"/bootstrap.min.js", "__JS_BOOTSTRAP__"),
@@ -137,7 +138,7 @@ class NxReport(object):
     def build_dict(self, res):
         d = OrderedDict()
         for i in res:
-            if i['d'] not in d.keys():
+            if i['d'] not in list(d.keys()):
                 d[i['d']] = i['ex']
         return d
 
@@ -196,7 +197,7 @@ class WorldMap():
                     bycn[country]['count'] += ip['c']
         base_array = 'citymap["__CN__"] = {center: new google.maps.LatLng(__COORDS__), population: __COUNT__};\n'
         citymap = ''
-        for cn in bycn.keys():
+        for cn in list(bycn.keys()):
             citymap += base_array.replace('__CN__', cn).replace('__COORDS__', bycn[cn]['coords']).replace('__COUNT__', 
                                                                                                           str(bycn[cn]['count']))
         render = render.replace('__CITYMAP__', citymap)

@@ -1,4 +1,4 @@
-import urlparse
+import urllib.parse
 import string
 import itertools
 import datetime
@@ -59,7 +59,7 @@ class NxImportFilter():
         if int1 < int2:
             return -1
     def word(self, w, res):
-        if w not in self.kw.keys():
+        if w not in list(self.kw.keys()):
             return -1
         res.append(w)
         return 1
@@ -328,23 +328,23 @@ class NxInject():
             event = self.multiline_buf[event['seed_end']]
             del self.multiline_buf[event['seed_end']]
         entry = {}
-        if not event.has_key('uri'):
+        if 'uri' not in event:
             entry['uri'] = ''
         else:
             entry['uri'] = event['uri']
-        if not event.has_key('server'):
+        if 'server' not in event:
             entry['server'] = ''
         else:
             entry['server'] = event['server']
-        if not event.has_key('content'):
+        if 'content' not in event:
             entry['content'] = ''
         else:
             entry['content'] = event['content']
-        if not event.has_key('ip'):
+        if 'ip' not in event:
             entry['ip'] = ''
         else:
             entry['ip'] = event['ip']
-        if not event.has_key('date'):
+        if 'date' not in event:
             entry['date'] = ''
         else:
             entry['date'] = event['date']
@@ -353,8 +353,8 @@ class NxInject():
 
 
         # NAXSI_EXLOG lines only have one triple (zone,id,var_name), but has non-empty content
-        if 'zone' in event.keys():
-            if 'var_name' in event.keys():
+        if 'zone' in list(event.keys()):
+            if 'var_name' in list(event.keys()):
                 entry['var_name'] = event['var_name']
             entry['zone'] = event['zone']
             entry['id'] = event['id']
@@ -364,21 +364,21 @@ class NxInject():
         
         # NAXSI_FMT can have many (zone,id,var_name), but does not have content
         # we iterate over triples.
-        elif 'zone0' in event.keys():
+        elif 'zone0' in list(event.keys()):
             commit = True
             for i in itertools.count():
                 entry = copy.deepcopy(clean)
                 zn = ''
                 vn = ''
                 rn = ''
-                if 'var_name' + str(i) in event.keys():
+                if 'var_name' + str(i) in list(event.keys()):
                     entry['var_name'] = event['var_name' + str(i)]
-                if 'zone' + str(i) in event.keys():
+                if 'zone' + str(i) in list(event.keys()):
                     entry['zone']  = event['zone' + str(i)]
                 else:
                     commit = False
                     break
-                if 'id' + str(i) in event.keys():
+                if 'id' + str(i) in list(event.keys()):
                     entry['id'] = event['id' + str(i)]
                 else:
                     commit = False
@@ -411,18 +411,18 @@ class NxInject():
     def exception_to_dict(self, line):
         """Parses a naxsi exception to a dict, 
         1 on error, 0 on success"""
-        odict = urlparse.parse_qs(line)
-        for x in odict.keys():
+        odict = urllib.parse.parse_qs(line)
+        for x in list(odict.keys()):
             odict[x][0] = odict[x][0].replace('\n', "\\n")
             odict[x][0] = odict[x][0].replace('\r', "\\r")
             odict[x] = odict[x][0]
         # check for incomplete/truncated lines
-        if 'zone0' in odict.keys():
+        if 'zone0' in list(odict.keys()):
             for i in itertools.count():
                 is_z = is_id = False
-                if 'zone' + str(i) in odict.keys():
+                if 'zone' + str(i) in list(odict.keys()):
                     is_z = True
-                if 'id' + str(i) in odict.keys():
+                if 'id' + str(i) in list(odict.keys()):
                     is_id = True
                 if is_z is True and is_id is True:
                     continue

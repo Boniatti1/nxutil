@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 import logging
 
 
@@ -10,7 +10,7 @@ class NxConfig(object):
         self.db_dir = ""
         self.core_rules = "/etc/nginx/naxsi_core.rules"
     def parse(self):
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.readfp(open(self.path))
         try:
             self.data_dir = config.get("nx_util", "data_dir")
