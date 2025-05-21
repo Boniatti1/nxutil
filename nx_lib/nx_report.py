@@ -107,7 +107,7 @@ class NxReport(object):
         for x in list(dict_replace.keys()):
             if dict_replace[x] is None:
                 dict_replace[x] = str(0)
-        html = reduce(lambda html,(b, c): html.replace(b, c), 
+        html = reduce(lambda html, bc: html.replace(*bc), 
                       list(dict_replace.items()), html)
         required_files = [(self.data_dir+"/bootstrap.min.css", "__CSS_BOOTSTRAP__"),
                           (self.data_dir+"/bootstrap-responsive.min.css", "__CSS_BOOTSTRAP_RESPONSIVE_"),
