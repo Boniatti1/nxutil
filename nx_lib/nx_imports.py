@@ -456,7 +456,7 @@ class NxInject():
         success = 0
         for date_format in supported_formats:
             nb_sp = date_format.count(" ")
-            clean_date = string.join(date.split(" ")[:nb_sp+1], " ")
+            clean_date = " ".join(date.split(" ")[:nb_sp+1])
             # strptime does not support numeric time zone, hack.
             idx = clean_date.find("+")
             if idx != -1:
